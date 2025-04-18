@@ -150,7 +150,7 @@ public class MembersController {
     //Generate secret
     @GetMapping("/secret")
     public String generateSeceret(){
-        //return Helper.generateReference();
-        return "This does not return reference again oo";
+        return Helper.generateReference();
+
     }
 }
