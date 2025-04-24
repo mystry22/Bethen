@@ -33,22 +33,22 @@ jobs:
         run: docker push mystry22/bethen:latest
 
 
-deploy:
-  needs: build
-  runs-on: [aws-ec2]
-  steps:
-    - name: Check Docker installation
-      run: |
-        if ! [ -x "$(command -v docker)" ]; then
-          echo "Error: Docker is not installed." >&2
-          exit 1
-        fi
-    - name: pull docker image
-      run: sudo docker pull mystry22/bethen:latest
-    - name: Delete old containers
-      run: |
-        if [ "$(sudo docker ps -aq -f name=spring-app)" ]; then
-          sudo docker rm -f spring-app
-        fi
-    - name: Run docker container
-      run: sudo docker run -d -p 8080:8080 --name spring-app mystry22/bethen
+  deploy:
+    needs: build
+    runs-on: [aws-ec2]
+    steps:
+      - name: Check Docker installation
+        run: |
+          if ! [ -x "$(command -v docker)" ]; then
+            echo "Error: Docker is not installed." >&2
+            exit 1
+          fi
+      - name: pull docker image
+        run: sudo docker pull mystry22/bethen:latest
+      - name: Delete old containers
+        run: |
+          if [ "$(sudo docker ps -aq -f name=spring-app)" ]; then
+            sudo docker rm -f spring-app
+          fi
+      - name: Run docker container
+        run: sudo docker run -d -p 8080:8080 --name spring-app mystry22/bethen
