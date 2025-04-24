@@ -20,9 +20,9 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{secrets.DOCKER_USERNAME}} -p ${{secrets.DOCKER_PASSWORD}}
       - name: Build docker image
-        run: docker build -t mystry22/testjavadocker .
+        run: docker build -t mystry22/bethen .
       - name: Publish image to docker hub
-        run: docker push mystry22/testjavadocker:latest
+        run: docker push mystry22/bethen:latest
 
 
 
@@ -40,12 +40,12 @@ jobs:
             exit 1
           fi
       - name: pull docker image
-        run: sudo docker pull mystry22/testjavadocker:latest
+        run: sudo docker pull mystry22/bethen:latest
       - name: Delete old containers
         run: |
           if [ "$(sudo docker ps -aq -f name=spring-app)" ]; then
             sudo docker rm -f spring-app
           fi
       - name: Run docker container
-        run: sudo docker run -d -p 8080:8080 --name spring-app mystry22/testjavadocker
+        run: sudo docker run -d -p 8080:8080 --name spring-app mystry22/bethen
 
