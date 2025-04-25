@@ -155,7 +155,7 @@ public class MembersController {
     public String generateSeceret(){
         //return Helper.generateReference();
 
-        return  rand;
+        return  rand + " Trigger new build";
 
 
     }
