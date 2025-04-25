@@ -28,8 +28,6 @@ import java.util.*;
 @RequestMapping("/api/v1/members")
 public class MembersController {
 
-    @Value("${psw_secret}")
-    private String rand;
 
     @Autowired
     private MemberService memberService;
@@ -155,7 +153,7 @@ public class MembersController {
     public String generateSeceret(){
         //return Helper.generateReference();
 
-        return  rand + " Trigger another new build";
+        return " Trigger another new build";
 
 
     }
