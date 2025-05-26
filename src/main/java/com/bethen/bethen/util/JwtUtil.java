@@ -5,7 +5,6 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -15,8 +14,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Base64.getDecoder;
-
 
 @Component
 public class JwtUtil {
@@ -24,6 +21,9 @@ public class JwtUtil {
     //Create Token Secret
     private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     //private final String SECRET_KEY = "spyJSAhhNaR0BqgapqSez9WODf3nSS/WKwY80wQD7Uw=";
+
+    Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
 
 //    private SecretKey generateSecret(){
@@ -44,7 +44,7 @@ public class JwtUtil {
                 .setSubject(userData.getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .signWith(SECRET_KEY)
+                .signWith(secretKey)
                 .compact();
     }
 
@@ -57,7 +57,7 @@ public class JwtUtil {
     //Extract user id from token
     public Object extractId(String token){
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(encodedKey)
                 .build()
                 .parseClaimsJws(token);
 
@@ -71,7 +71,7 @@ public class JwtUtil {
     //Implement Extract all claims
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(encodedKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
@@ -89,5 +89,13 @@ public class JwtUtil {
         final String extractedEmail = extractTokenClaims(token);
         return  (extractedEmail.equals(email) && !isTokenExpired(token));
     }
+
+    //Get all total claims
+    public Object getTotalClaims(String token){
+        return extractAllClaims(token);
+    }
+
+
+
 
 }

@@ -43,7 +43,7 @@ public class TransactionsService implements TransactionsInter {
     //Generate payment link
     @Override
     public Object generatePaymentLink(PaymentLinkRequestDto paymentLinkRequestDto, String token) {
-
+        System.out.println("I see am oo");
         String reference = Helper.generateReference();
         paymentLinkRequestDto.setReference(reference);
         Object response = httpServices.getPaymentLink("transaction/initialize",paymentLinkRequestDto).block();

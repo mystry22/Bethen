@@ -9,6 +9,7 @@ import com.bethen.bethen.msg.LoginSuccess;
 import com.bethen.bethen.msg.Msg;
 import com.bethen.bethen.services.MemberService;
 import com.bethen.bethen.util.Helper;
+import com.bethen.bethen.util.JwtUtil;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.validation.Valid;
@@ -19,9 +20,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
 
 
 import javax.crypto.SecretKey;
+
 import java.util.*;
 
 @RestController
@@ -32,6 +35,9 @@ public class MembersController {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private JwtUtil jwtUtil;
 
     //Get all members
     @GetMapping("/getAllMembers")
@@ -157,5 +163,12 @@ public class MembersController {
         return " Trigger another new build";
 
 
+    }
+
+    @GetMapping("/userDetails")
+    public ResponseEntity<?> getUserDetails(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
+
+        String token = authorizationHeader.substring(7);
+        return  new ResponseEntity<>(memberService.getUserDetailsViaToken(token), HttpStatus.OK);
     }
 }

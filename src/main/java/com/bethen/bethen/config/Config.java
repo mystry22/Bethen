@@ -46,11 +46,12 @@ public class Config {
                         //Auth required endpoints
                         .requestMatchers("/api/v1/members/deleteMember/*","/api/v1/admin/getAllAdmin","/api/v1/admin/deleteAdmin/**").hasRole("ADMIN")
                     .requestMatchers("/api/v1/members/getAllMembers").hasRole("ADMIN")
-                        .requestMatchers("/api/v1/members/getMemberById/**").hasAnyRole("BASIC", "ADMIN")
+                        .requestMatchers("/api/v1/members/getMemberById/**").permitAll()
                                 .requestMatchers("/api/v1/members/secret").permitAll()
                         .requestMatchers("/api/v1/members/changePassword").hasRole("BASIC")
                                 .requestMatchers("/api/v1/transactions/paymentLink").hasRole("BASIC")
                                 .requestMatchers("/api/v1/transactions/allTransactions").hasRole("ADMIN")
+                                .requestMatchers("/api/v1/members/userDetails").permitAll()
                     .anyRequest().authenticated()
                         // Require authentication for all other requests
         ).csrf(AbstractHttpConfigurer::disable)

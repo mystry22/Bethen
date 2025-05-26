@@ -6,6 +6,7 @@ import com.bethen.bethen.dto.MemberRequestDto;
 import com.bethen.bethen.dto.MemberResponseDto;
 import com.bethen.bethen.interfaces.MemberInter;
 import com.bethen.bethen.models.MemberModel;
+import com.bethen.bethen.models.UserDetailsModel;
 import com.bethen.bethen.repos.MembersRepo;
 import com.bethen.bethen.util.Helper;
 import com.bethen.bethen.util.JwtObjectForGen;
@@ -163,6 +164,14 @@ public class MemberService implements MemberInter {
           return  memberModel;
 
         }
+
+    }
+
+    @Override
+    public Optional<UserDetailsModel> getUserDetailsViaToken(String token) {
+        Object claims = jwtUtil.getTotalClaims(token);
+        UserDetailsModel AllClaims =modelMapper.map(claims, UserDetailsModel.class );
+        return Optional.ofNullable(AllClaims);
 
     }
 
