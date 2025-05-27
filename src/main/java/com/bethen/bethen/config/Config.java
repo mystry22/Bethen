@@ -5,6 +5,7 @@ import com.bethen.bethen.security.JwtFilterTwo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,6 +38,7 @@ public class Config {
        return  http
                 .authorizeHttpRequests(authorize -> authorize
                                 //No Auth for these requests
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //Permits OPTION suitable to deal with CORS
                                 .requestMatchers("/api/v1/members/createNewMember").permitAll()
                                 .requestMatchers("/api/v1/members/memberLogin").permitAll()
                                 .requestMatchers("/api/v1/admin/createAdmin").permitAll()
