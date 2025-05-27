@@ -28,7 +28,7 @@ import javax.crypto.SecretKey;
 import java.util.*;
 
 @RestController
-@CrossOrigin(origins = "*", methods = {RequestMethod.DELETE, RequestMethod.GET,RequestMethod.PUT,RequestMethod.POST})
+@CrossOrigin(origins = "*", methods = {RequestMethod.DELETE, RequestMethod.GET,RequestMethod.PUT,RequestMethod.POST, RequestMethod.OPTIONS})
 @RequestMapping("/api/v1/members")
 public class MembersController {
 
