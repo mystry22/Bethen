@@ -54,6 +54,9 @@ public class Config {
                                 .requestMatchers("/api/v1/transactions/paymentLink").hasRole("BASIC")
                                 .requestMatchers("/api/v1/transactions/allTransactions").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/members/userDetails").permitAll()
+                                .requestMatchers("/api/v1/transactions/userTransaction").hasRole("BASIC")
+                                .requestMatchers("/api/v1/transactions/getEnc").permitAll()
+                                .requestMatchers("/api/v1/transactions/returnClaims").hasRole("BASIC")
                     .anyRequest().authenticated()
                         // Require authentication for all other requests
         ).csrf(AbstractHttpConfigurer::disable)

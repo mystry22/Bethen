@@ -5,10 +5,13 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,21 +21,13 @@ import java.util.Map;
 @Component
 public class JwtUtil {
 
-    //Create Token Secret
-    private final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    //private final String SECRET_KEY = "spyJSAhhNaR0BqgapqSez9WODf3nSS/WKwY80wQD7Uw=";
-
-    Key secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
+    String WORKING_SECRET = "l31XkIh133kw69MRF5aY+0mnKNxhkkkBQ6iaAyWZjlI=";
+    Key uDeyWhine = Keys.hmacShaKeyFor(WORKING_SECRET.getBytes(StandardCharsets.UTF_8));
 
 
-//    private SecretKey generateSecret(){
-//        byte[] decodeKey = Base64.getDecoder().decode(SECRET_KEY);
-//        return  Keys.hmacShaKeyFor(decodeKey);
-//
-//    }
     //Generate Token
     public String generateToken(JwtObjectForGen userData){
+
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", userData.getRole());
         claims.put("firstName", userData.getFirstName());
@@ -44,7 +39,7 @@ public class JwtUtil {
                 .setSubject(userData.getEmail())
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .signWith(secretKey)
+                .signWith(uDeyWhine, SignatureAlgorithm.HS256)
                 .compact();
     }
 
@@ -57,7 +52,7 @@ public class JwtUtil {
     //Extract user id from token
     public Object extractId(String token){
         Jws<Claims> jwsClaims = Jwts.parserBuilder()
-                .setSigningKey(encodedKey)
+                .setSigningKey(uDeyWhine)
                 .build()
                 .parseClaimsJws(token);
 
@@ -71,7 +66,7 @@ public class JwtUtil {
     //Implement Extract all claims
     private Claims extractAllClaims(String token){
         return Jwts.parserBuilder()
-                .setSigningKey(encodedKey)
+                .setSigningKey(uDeyWhine)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();

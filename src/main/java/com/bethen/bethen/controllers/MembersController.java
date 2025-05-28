@@ -25,6 +25,7 @@ import org.springframework.http.HttpHeaders;
 
 import javax.crypto.SecretKey;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 @RestController
@@ -159,8 +160,11 @@ public class MembersController {
     @GetMapping("/secret")
     public String generateSeceret(){
         //return Helper.generateReference();
+        SecureRandom random = new SecureRandom();
+        byte[] key = new byte[32]; // 256 bits for HS256, adjust as needed
+        random.nextBytes(key);
+        return Base64.getEncoder().encodeToString(key);
 
-        return " Trigger another new build";
 
 
     }

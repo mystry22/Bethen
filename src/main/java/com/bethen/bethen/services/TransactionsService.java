@@ -1,24 +1,34 @@
 package com.bethen.bethen.services;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
+import com.bethen.bethen.dto.MemberResponseDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.interfaces.TransactionsInter;
-import com.bethen.bethen.models.InvestmentModel;
-import com.bethen.bethen.models.MemberModel;
-import com.bethen.bethen.models.TransactionsModel;
+import com.bethen.bethen.models.*;
 import com.bethen.bethen.repos.InvestmentRepo;
 import com.bethen.bethen.repos.MembersRepo;
 import com.bethen.bethen.repos.TransactionRepo;
 import com.bethen.bethen.util.Helper;
+import com.bethen.bethen.util.JwtObjectForGen;
 import com.bethen.bethen.util.JwtUtil;
+import io.jsonwebtoken.Claims;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -37,6 +47,9 @@ public class TransactionsService implements TransactionsInter {
 
     @Autowired
     private InvestmentRepo investmentRepo;
+
+    @Autowired
+    ModelMapper modelMapper;
 
 
 
@@ -165,6 +178,46 @@ public class TransactionsService implements TransactionsInter {
 
         return "user does not exist";
     }
+
+    @Override
+    public List<TransactionsResponseModel> getUserTransactions(String token) {
+
+        //return claims
+        Claims claims = (Claims) jwtUtil.getTotalClaims(token);
+        JWTResponseModel responseModel = new JWTResponseModel();
+        String userId = responseModel.setUserId((String) claims.get("userId"));
+        //find using userId
+        List<TransactionsResponseModel> response = transactionRepo.getTransactionsByUserId(userId)
+                .orElse(Collections.emptyList()) // handle missing data safely
+                .stream()
+                .map(transaction -> modelMapper.map(transaction, TransactionsResponseModel.class))
+                .collect(Collectors.toList());
+
+        return response;
+
+    }
+
+    public  String calculateHmacSha512(String data, String key)
+            throws NoSuchAlgorithmException, InvalidKeyException {
+        // HmacSHA512 is the algorithm name for SHA-512 HMAC
+        Mac hmacSha512 = Mac.getInstance("HmacSHA512");
+        SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "HmacSHA512");
+        hmacSha512.init(secretKeySpec);
+        byte[] hash = hmacSha512.doFinal(data.getBytes(StandardCharsets.UTF_8));
+
+        // Convert byte array to hexadecimal string
+        StringBuilder hexString = new StringBuilder();
+        for (byte b : hash) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
+    }
+
+
 
 
 }

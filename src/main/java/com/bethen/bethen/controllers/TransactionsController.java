@@ -5,11 +5,16 @@ import com.bethen.bethen.dto.PaymentLinkRequestDto;
 import com.bethen.bethen.dto.WebhookResponseDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.models.TransactionsModel;
+import com.bethen.bethen.models.TransactionsResponseModel;
+import com.bethen.bethen.models.UserDetailsModel;
 import com.bethen.bethen.msg.Msg;
 import com.bethen.bethen.services.HttpServices;
 import com.bethen.bethen.services.TransactionsService;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +22,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.*;
 
 @RestController
 @CrossOrigin(origins = "*", methods = {RequestMethod.DELETE, RequestMethod.GET,RequestMethod.PUT,RequestMethod.POST, RequestMethod.OPTIONS})
@@ -28,6 +35,8 @@ public class TransactionsController {
 
     @Autowired
     private TransactionsService transactionsService;
+
+    @Value("${jwt_secret}") String WORKING_SECRET;
 
 
     //Generate payment link
@@ -116,4 +125,11 @@ public class TransactionsController {
     }
 
     //Transaction history for a user
+    @GetMapping("/userTransaction")
+    public ResponseEntity<List<TransactionsResponseModel>> getAllUserTransaction(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization){
+        String token = authorization.substring(7);
+        return new ResponseEntity<>(transactionsService.getUserTransactions(token), HttpStatus.OK);
+    }
+
+
 }
