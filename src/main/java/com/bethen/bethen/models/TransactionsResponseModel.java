@@ -12,7 +12,7 @@ public class TransactionsResponseModel {
     private String type;
     private String amount;
     private String status;
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 
     public String getType() {
         return type;
@@ -26,8 +26,8 @@ public class TransactionsResponseModel {
         return status;
     }
 
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     public void setType(String type) {
@@ -42,14 +42,14 @@ public class TransactionsResponseModel {
         this.status = status;
     }
 
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public TransactionsResponseModel(String type, String amount, String status, LocalDateTime updatedAt) {
+    public TransactionsResponseModel(String type, String amount, String status, LocalDateTime createdAt) {
         this.type = type;
         this.amount = amount;
         this.status = status;
-        this.updatedAt = updatedAt;
+        this.createdAt = createdAt;
     }
 }
