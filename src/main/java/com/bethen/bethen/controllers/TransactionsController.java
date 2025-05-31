@@ -4,9 +4,7 @@ import com.bethen.bethen.dto.ActivatePlanRequestDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
 import com.bethen.bethen.dto.WebhookResponseDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
-import com.bethen.bethen.models.TransactionsModel;
-import com.bethen.bethen.models.TransactionsResponseModel;
-import com.bethen.bethen.models.UserDetailsModel;
+import com.bethen.bethen.models.*;
 import com.bethen.bethen.msg.Msg;
 import com.bethen.bethen.services.HttpServices;
 import com.bethen.bethen.services.TransactionsService;
@@ -129,6 +127,16 @@ public class TransactionsController {
     public ResponseEntity<List<TransactionsResponseModel>> getAllUserTransaction(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization){
         String token = authorization.substring(7);
         return new ResponseEntity<>(transactionsService.getUserTransactions(token), HttpStatus.OK);
+    }
+
+    @GetMapping("/bankList")
+    public ResponseEntity<?> getBanklist(){
+        return new ResponseEntity<>(transactionsService.getBankList(), HttpStatus.OK);
+    }
+
+    @PostMapping("/nameValidation")
+    public ResponseEntity<?> nameValidation(@RequestBody NameValidationModel nameValidationModel){
+        return new ResponseEntity<>(transactionsService.validateName(nameValidationModel), HttpStatus.OK);
     }
 
 

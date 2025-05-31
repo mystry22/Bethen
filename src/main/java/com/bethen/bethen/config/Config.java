@@ -57,6 +57,8 @@ public class Config {
                                 .requestMatchers("/api/v1/transactions/userTransaction").hasRole("BASIC")
                                 .requestMatchers("/api/v1/transactions/getEnc").permitAll()
                                 .requestMatchers("/api/v1/transactions/returnClaims").hasRole("BASIC")
+                                .requestMatchers("/api/v1/transactions/bankList").permitAll()
+                                .requestMatchers("/api/v1/transactions/nameValidation").permitAll()
                     .anyRequest().authenticated()
                         // Require authentication for all other requests
         ).csrf(AbstractHttpConfigurer::disable)

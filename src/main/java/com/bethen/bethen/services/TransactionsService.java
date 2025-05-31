@@ -1,33 +1,33 @@
 package com.bethen.bethen.services;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
-import com.bethen.bethen.dto.MemberResponseDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
-import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.interfaces.TransactionsInter;
 import com.bethen.bethen.models.*;
 import com.bethen.bethen.repos.InvestmentRepo;
 import com.bethen.bethen.repos.MembersRepo;
 import com.bethen.bethen.repos.TransactionRepo;
 import com.bethen.bethen.util.Helper;
-import com.bethen.bethen.util.JwtObjectForGen;
 import com.bethen.bethen.util.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import org.springframework.http.*;
+
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -50,8 +50,6 @@ public class TransactionsService implements TransactionsInter {
 
     @Autowired
     ModelMapper modelMapper;
-
-
 
     //Generate payment link
     @Override
@@ -195,6 +193,16 @@ public class TransactionsService implements TransactionsInter {
 
         return response;
 
+    }
+
+    @Override
+    public List<BankList> getBankList() {
+       return (List<BankList>) httpServices.getBankList();
+    }
+
+    @Override
+    public NameValidationResponseModel validateName(NameValidationModel nameValidationModel) {
+        return httpServices.nameEnquiry(nameValidationModel);
     }
 
     public  String calculateHmacSha512(String data, String key)
