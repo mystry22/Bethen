@@ -2,6 +2,7 @@ package com.bethen.bethen.interfaces;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
+import com.bethen.bethen.dto.PayoutDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.models.*;
 
@@ -16,4 +17,6 @@ public interface TransactionsInter {
     public List<TransactionsResponseModel> getUserTransactions(String token);
     public List<BankList> getBankList();
     public NameValidationResponseModel validateName(NameValidationModel nameValidationModel);
+    public CustomReturnResponse doPayout(String token, PayoutDto payoutDto);
+    public InvestmentModel getInvestmentData (String token);
 }

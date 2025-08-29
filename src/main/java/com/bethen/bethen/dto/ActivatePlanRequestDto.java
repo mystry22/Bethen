@@ -11,8 +11,6 @@ public class ActivatePlanRequestDto {
     @ValidateAmount(message = "Please provide a valid amount")
     private String amount;
 
-
-
     public String getAmount() {
         return amount;
     }

@@ -1,6 +1,7 @@
 package com.bethen.bethen.controllers;
 
 import com.bethen.bethen.dto.*;
+import com.bethen.bethen.models.CustomReturnResponse;
 import com.bethen.bethen.msg.LoginSuccess;
 import com.bethen.bethen.msg.Msg;
 import com.bethen.bethen.services.AdminService;
@@ -80,6 +81,19 @@ public class AdminController {
             Msg msg = new Msg(true, "Admin deleted");
             return  new ResponseEntity<>(msg,HttpStatus.OK);
         }
+    }
+
+
+    @PostMapping("/addFundsToUser")
+    public ResponseEntity<CustomReturnResponse> addFundsToUser(@RequestBody FundAccountByAdminDto fundAccountByAdminDto){
+        String response = adminService.addFundsToUser(fundAccountByAdminDto.getAmount(), fundAccountByAdminDto.getEmail());
+
+        if(response == "balance updated"){
+            CustomReturnResponse customReturnResponse = new CustomReturnResponse(true,"User credited successfully");
+            return new ResponseEntity<>(customReturnResponse,HttpStatus.OK);
+        }
+        CustomReturnResponse customReturnResponse = new CustomReturnResponse(false,"No user found");
+        return new ResponseEntity<>(customReturnResponse, HttpStatus.OK);
     }
 
     //Suspend account

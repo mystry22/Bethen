@@ -9,4 +9,5 @@ public interface AdminInter {
     public List<MemberResponseDto> getAllAdmin();
     public Object loginAdmin(LoginDto loginDto);
     public String deleteAdmin(String id);
+    public String addFundsToUser(String amount, String email);
 }

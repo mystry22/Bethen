@@ -2,6 +2,7 @@ package com.bethen.bethen.services;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
+import com.bethen.bethen.dto.PayoutDto;
 import com.bethen.bethen.interfaces.TransactionsInter;
 import com.bethen.bethen.models.*;
 import com.bethen.bethen.repos.InvestmentRepo;
@@ -28,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 
@@ -43,6 +45,9 @@ public class TransactionsService implements TransactionsInter {
     private TransactionRepo transactionRepo;
 
     @Autowired
+    private MailingService mailingService;
+
+    @Autowired
     private MembersRepo membersRepo;
 
     @Autowired
@@ -54,7 +59,6 @@ public class TransactionsService implements TransactionsInter {
     //Generate payment link
     @Override
     public Object generatePaymentLink(PaymentLinkRequestDto paymentLinkRequestDto, String token) {
-        System.out.println("I see am oo");
         String reference = Helper.generateReference();
         paymentLinkRequestDto.setReference(reference);
         Object response = httpServices.getPaymentLink("transaction/initialize",paymentLinkRequestDto).block();
@@ -129,7 +133,7 @@ public class TransactionsService implements TransactionsInter {
 
         //get amount from request
         double amount = Double.parseDouble(activatePlanRequestDto.getAmount());
-
+        String amoutToString = String.valueOf(amount);
         if(memberModel != null) {
             //compare investment amount and balance
             if(memberModel.getBalance() >= amount){
@@ -143,7 +147,7 @@ public class TransactionsService implements TransactionsInter {
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 investmentModel.setEndDate(maturity,Helper.dateTimeFormatter());
                 investmentModel.setStartDate(today, Helper.dateTimeFormatter());
-                investmentModel.setAmount(amount);
+                investmentModel.setAmount(amoutToString);
                 investmentModel.setUserId(userId);
 
                 //Save to investment db
@@ -162,12 +166,24 @@ public class TransactionsService implements TransactionsInter {
                 transactionsModel.setUserId(userId);
                 transactionsModel.setType("investment");
                 transactionsModel.setStatus("active");
+                transactionsModel.setAmount(amoutToString);
                 transactionsModel.setCreatedAt(Helper.generateTodayDateAndTime(),Helper.dateTimeFormatter());
                 transactionsModel.setReference(Helper.generateInvestmentReference());
 
                 transactionRepo.insert(transactionsModel);
 
-                return "investment initiated successfully";
+                //mail params
+                PlanNotificationModel planNotificationModel = new PlanNotificationModel(memberModel.getEmail(),activatePlanRequestDto.getAmount(),memberModel.getFirstName());
+
+                //send mail
+                String mailResponse = mailingService.notificationOfPlan(planNotificationModel);
+                if(mailResponse.equals("mail sent")){
+                    return "investment initiated successfully";
+                }else {
+                    return  "nawao";
+                }
+
+
             }else {
                 return "insufficient balance";
             }
@@ -185,13 +201,13 @@ public class TransactionsService implements TransactionsInter {
         JWTResponseModel responseModel = new JWTResponseModel();
         String userId = responseModel.setUserId((String) claims.get("userId"));
         //find using userId
-        List<TransactionsResponseModel> response = transactionRepo.getTransactionsByUserId(userId)
-                .orElse(Collections.emptyList()) // handle missing data safely
+
+        return transactionRepo.getTransactionsByUserId(userId)
+                .orElse(Collections.emptyList()) // handle missing transactions
                 .stream()
                 .map(transaction -> modelMapper.map(transaction, TransactionsResponseModel.class))
                 .collect(Collectors.toList());
 
-        return response;
 
     }
 
@@ -204,6 +220,62 @@ public class TransactionsService implements TransactionsInter {
     public NameValidationResponseModel validateName(NameValidationModel nameValidationModel) {
         return httpServices.nameEnquiry(nameValidationModel);
     }
+
+    @Override
+    public CustomReturnResponse doPayout(String token, PayoutDto payoutDto) {
+        //get user details from token
+        Claims claims = (Claims) jwtUtil.getTotalClaims(token);
+        //get user email
+        String email = (String) claims.get("email");
+        //deduct amount
+        MemberModel memberModel = membersRepo.findByEmail(email).orElse(null);
+
+        if(memberModel != null){
+            //save new changes
+            Double newBal = memberModel.getBalance() - (Double.parseDouble(payoutDto.getAmount()));
+            if(newBal < 0){
+                CustomReturnResponse customReturnResponse = new CustomReturnResponse(false,"Insufficient funds");
+                return customReturnResponse;
+            }
+
+            memberModel.setBalance(newBal);
+            membersRepo.save(memberModel);
+
+            //register in transaction model
+            TransactionsModel transactionsModel = new TransactionsModel();
+            transactionsModel.setCreatedAt(Helper.generateTodayDateAndTime(),Helper.dateTimeFormatter());
+            transactionsModel.setType("Payout");
+            transactionsModel.setStatus("success");
+            transactionsModel.setUserId(memberModel.getUserId());
+            transactionsModel.setReference(Helper.generateReference());
+            transactionsModel.setAmount(payoutDto.getAmount());
+
+            transactionRepo.insert(transactionsModel);
+
+            //notify admin via mail
+            mailingService.notificationOfPayout(memberModel.getEmail(),payoutDto.getAmount(),payoutDto.getAccountNumber(),payoutDto.getBank());
+            CustomReturnResponse customReturnResponse = new CustomReturnResponse(true,"Payout initiated successfully");
+            return customReturnResponse;
+        }
+        return null;
+    }
+
+    @Override
+    public InvestmentModel getInvestmentData(String token) {
+        //get token from claims
+        Claims claims = (Claims) jwtUtil.getTotalClaims(token);
+        String userId = claims.get("userId").toString();
+
+        InvestmentModel investmentModel = investmentRepo.findById(userId).orElse(null);
+
+        if(investmentModel != null){
+            return investmentModel;
+        }
+
+        //get invest data and return same
+        return null;
+    }
+
 
     public  String calculateHmacSha512(String data, String key)
             throws NoSuchAlgorithmException, InvalidKeyException {

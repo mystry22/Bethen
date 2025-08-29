@@ -4,8 +4,11 @@ import com.bethen.bethen.dto.*;
 import com.bethen.bethen.interfaces.AdminInter;
 import com.bethen.bethen.models.AdminModel;
 import com.bethen.bethen.models.MemberModel;
+import com.bethen.bethen.models.TransactionsModel;
 import com.bethen.bethen.repos.AdminRepo;
 import com.bethen.bethen.repos.MembersRepo;
+import com.bethen.bethen.repos.TransactionRepo;
+import com.bethen.bethen.util.Helper;
 import com.bethen.bethen.util.JwtObjectForGen;
 import com.bethen.bethen.util.JwtUtil;
 import com.bethen.bethen.util.Role;
@@ -17,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +43,12 @@ public class AdminService implements AdminInter {
 
     @Autowired
     private MongoTemplate mongoTemplate;
+
+    @Autowired
+    private TransactionRepo transactionRepo;
+
+    @Autowired
+    private MailingService mailingService;
 
     //Create admin
     @Override
@@ -123,4 +133,38 @@ public class AdminService implements AdminInter {
 
 
     }
+
+    @Override
+    public String addFundsToUser(String amount, String email) {
+        //get user details
+        MemberModel memberModel = membersRepo.findByEmail(email).orElse(null);
+
+        if(memberModel != null){
+            double newBal = memberModel.getBalance() + Double.parseDouble(amount);
+
+            memberModel.setBalance(newBal);
+            membersRepo.save(memberModel);
+
+            //Add to transactions table
+            TransactionsModel transactionsModel = new TransactionsModel();
+            transactionsModel.setAmount(amount);
+            transactionsModel.setUserId(memberModel.getUserId());
+            transactionsModel.setReference(Helper.generateReference());
+            transactionsModel.setStatus("success");
+            transactionsModel.setType("ROI");
+            transactionsModel.setCreatedAt(Helper.generateTodayDateAndTime(),Helper.dateTimeFormatter());
+
+            transactionRepo.insert(transactionsModel);
+
+            //notify user
+            mailingService.notificationOfROIPayment(memberModel.getFirstName(),amount,Helper.generateTodayDateAndTime().toString(),email);
+
+            return "balance updated";
+        }else {
+            return "no user found";
+        }
+
+    }
+
+
 }

@@ -2,6 +2,7 @@ package com.bethen.bethen.controllers;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
+import com.bethen.bethen.dto.PayoutDto;
 import com.bethen.bethen.dto.WebhookResponseDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.models.*;
@@ -19,11 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.*;
 
 @RestController
@@ -137,6 +133,18 @@ public class TransactionsController {
     @PostMapping("/nameValidation")
     public ResponseEntity<?> nameValidation(@RequestBody NameValidationModel nameValidationModel){
         return new ResponseEntity<>(transactionsService.validateName(nameValidationModel), HttpStatus.OK);
+    }
+
+    @PostMapping("doPayOut")
+    public ResponseEntity<CustomReturnResponse> doPayOut(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization, @RequestBody PayoutDto payoutDto){
+        String token = authorization.substring(7);
+        return new ResponseEntity<>(transactionsService.doPayout(token, payoutDto), HttpStatus.OK);
+    }
+
+    @GetMapping("getInvestment")
+    public ResponseEntity<InvestmentModel> getInvestment(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization){
+        String token = authorization.substring(7);
+        return new ResponseEntity<>(transactionsService.getInvestmentData(token),HttpStatus.OK);
     }
 
 

@@ -13,9 +13,18 @@ public class TransactionsResponseModel {
     private String amount;
     private String status;
     private LocalDateTime createdAt;
+    private String _id;
 
     public String getType() {
         return type;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
     public String getAmount() {
@@ -46,10 +55,13 @@ public class TransactionsResponseModel {
         this.createdAt = createdAt;
     }
 
-    public TransactionsResponseModel(String type, String amount, String status, LocalDateTime createdAt) {
+
+
+    public TransactionsResponseModel(String type, String amount, String status, LocalDateTime createdAt, String _id) {
         this.type = type;
         this.amount = amount;
         this.status = status;
         this.createdAt = createdAt;
+        this._id = _id;
     }
 }

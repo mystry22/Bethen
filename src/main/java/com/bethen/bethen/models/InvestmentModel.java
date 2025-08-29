@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 public class InvestmentModel {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private double amount;
+    private String amount;
     private  String status;
     @Id
     private String userId;
@@ -39,7 +39,7 @@ public class InvestmentModel {
         return endDate;
     }
 
-    public double getAmount() {
+    public String getAmount() {
         return amount;
     }
 
@@ -51,7 +51,7 @@ public class InvestmentModel {
         this.endDate = endDate;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(String amount) {
         this.amount = amount;
     }
 }
