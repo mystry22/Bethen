@@ -35,7 +35,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [aws_ec2]
+    runs-on: [backend_bethen]
     steps:
       - name: Check Docker installation
         run: |
