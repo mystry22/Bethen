@@ -92,12 +92,9 @@ public class HttpServices {
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             headers.set("Authorization", "Bearer " + API_KEY);
-
             HttpEntity<NameValidationModel> entity = new HttpEntity<>(nameValidationModel, headers);
-
             ResponseEntity<NameValidationResponseModel> exchange = restTemplate.exchange("https://api.budpay.com/api/v2/account_name_verify", HttpMethod.POST, entity, new ParameterizedTypeReference<NameValidationResponseModel>() {
             });
-
             if (exchange.getStatusCode().is2xxSuccessful()) {
                 NameValidationResponseModel data = exchange.getBody();
                 return data;
@@ -106,7 +103,6 @@ public class HttpServices {
         }catch (HttpClientErrorException | HttpServerErrorException e){
             throw new RuntimeException(e.getResponseBodyAsString());
         }
-
         return null;
     }
 
