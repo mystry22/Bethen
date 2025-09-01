@@ -36,7 +36,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: [aws_ec2]
+    runs-on: [aws-ec2]
     steps:
       - name: Check Docker installation
         run: |
