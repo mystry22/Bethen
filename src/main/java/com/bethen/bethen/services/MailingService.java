@@ -58,7 +58,7 @@ public class MailingService {
 
 
     }
-
+    //trying to trigger manual repush
     public String notificationOfROIPayment( String name, String amount, String month,String email) {
 
         try {

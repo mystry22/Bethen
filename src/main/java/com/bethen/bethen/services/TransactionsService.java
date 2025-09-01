@@ -265,7 +265,7 @@ public class TransactionsService implements TransactionsInter {
         //get token from claims
         Claims claims = (Claims) jwtUtil.getTotalClaims(token);
         String userId = claims.get("userId").toString();
-
+        System.out.println(userId);
         InvestmentModel investmentModel = investmentRepo.findById(userId).orElse(null);
 
         if(investmentModel != null){
