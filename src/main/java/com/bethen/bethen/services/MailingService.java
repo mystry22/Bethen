@@ -34,7 +34,6 @@ public class MailingService {
            return "not sent";
         }
 
-
     }
 
     public String notificationOfPayout(String email, String amount, String actNumber, String bank) {
@@ -83,9 +82,6 @@ public class MailingService {
 
     }
 
-    //This is just to re-trigger build
-
-
     public  String notificationHtmlObject (PlanNotificationModel planNotificationModel){
 
         String html = String.format( """
@@ -98,7 +94,7 @@ public class MailingService {
                 
                     <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
                 
-                    Warm regards <br />
+                    Warm regards. <br />
                 
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXTDz9qt0niP5vOzghA2zlOEw7f-TINtPehQ&s" width="30%%" height="10%%"  />
                 </body>
@@ -121,7 +117,7 @@ public class MailingService {
                 
                     <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
                 
-                    Warm regards <br />
+                    Warm regards. <br />
                 
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXTDz9qt0niP5vOzghA2zlOEw7f-TINtPehQ&s" width="30%%" height="10%%"  />
                 </body>
@@ -139,7 +135,7 @@ public class MailingService {
                 
                 <body>
                     Hi <b>Henry</b>, <br />
-                
+        
                     <div style="margin-top: 20px; margin-bottom: 20px;">This is to notify you that the user <b>%s</b> requested for a payout of <b>NGN%s</b></div>
                     
                     <div>
@@ -149,7 +145,7 @@ public class MailingService {
                 
                     <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
                 
-                    Warm regards <br />
+                    Warm regards. <br />
                 
                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXTDz9qt0niP5vOzghA2zlOEw7f-TINtPehQ&s" width="30%%" height="10%%"  />
                 </body>
