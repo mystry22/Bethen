@@ -25,7 +25,7 @@ public class MailingService {
             helper.setTo(planNotificationModel.getEmail());
             helper.setSubject("Plan Activation Success");
             helper.setText(htmContent, true);
-            helper.setFrom("NoReplyBethen");
+            helper.setFrom("info@bethen.com.ng");
 
             javaMailSender.send(message);
             return "mail sent";
@@ -47,7 +47,7 @@ public class MailingService {
             helper.setTo("alanemehenry6@gmail.com");
             helper.setSubject("Payout Request");
             helper.setText(htmContent, true);
-            helper.setFrom("henryoluwatobi6@gmail.com");
+            helper.setFrom("info@bethen.com.ng");
 
             javaMailSender.send(message);
             return "mail sent";
@@ -70,7 +70,7 @@ public class MailingService {
             helper.setTo(email);
             helper.setSubject("ROI Payment Notification");
             helper.setText(htmContent, true);
-            helper.setFrom("henryoluwatobi6@gmail.com");
+            helper.setFrom("info@bethen.com.ng");
 
             javaMailSender.send(message);
             return "mail sent";
@@ -92,7 +92,7 @@ public class MailingService {
                 
                     <div style="margin-top: 20px; margin-bottom: 20px;">Thanks for fixing the sum of <b>NGN%s</b> with us your monthly interest will be <b>5%% of NGN%s</b> for the next 3months.</div>
                 
-                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
+                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>info@bethen.com.ng</b> if you require further assistance or clarification </div>
                 
                     Warm regards. <br />
                 
@@ -115,7 +115,7 @@ public class MailingService {
                 
                     <div style="margin-top: 20px; margin-bottom: 20px;">This is to notify you that the sum of <b>NGN%s</b> was credited to your account on %s </div>
                 
-                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
+                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>info@bethen.com.ng</b> if you require further assistance or clarification </div>
                 
                     Warm regards. <br />
                 
@@ -143,7 +143,7 @@ public class MailingService {
                     Bank: <b>%s</b>
                     <div>
                 
-                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>bethen718@gmail.com</b> if you require further assistance or clarification </div>
+                    <div style="margin-bottom: 20px;">Please feel free to reach out to us on <b>info@bethen.com.ng</b> if you require further assistance or clarification </div>
                 
                     Warm regards. <br />
                 
