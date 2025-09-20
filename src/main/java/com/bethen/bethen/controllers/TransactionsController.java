@@ -1,9 +1,6 @@
 package com.bethen.bethen.controllers;
 
-import com.bethen.bethen.dto.ActivatePlanRequestDto;
-import com.bethen.bethen.dto.PaymentLinkRequestDto;
-import com.bethen.bethen.dto.PayoutDto;
-import com.bethen.bethen.dto.WebhookResponseDto;
+import com.bethen.bethen.dto.*;
 import com.bethen.bethen.dto.post.PaymentResponse;
 import com.bethen.bethen.models.*;
 import com.bethen.bethen.msg.Msg;
@@ -145,6 +142,11 @@ public class TransactionsController {
     public ResponseEntity<InvestmentModel> getInvestment(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization){
         String token = authorization.substring(7);
         return new ResponseEntity<>(transactionsService.getInvestmentData(token),HttpStatus.OK);
+    }
+
+    @PostMapping("generatePaymentAccount")
+    public  ResponseEntity<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountDto generateAccountDto){
+        return new ResponseEntity<>(transactionsService.generateAccount(generateAccountDto),HttpStatus.OK);
     }
 
 

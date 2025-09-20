@@ -1,11 +1,9 @@
 package com.bethen.bethen.services;
 
+import com.bethen.bethen.dto.GenerateAccountDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
 import com.bethen.bethen.dto.post.PaymentResponse;
-import com.bethen.bethen.models.BankList;
-import com.bethen.bethen.models.BankListResponse;
-import com.bethen.bethen.models.NameValidationModel;
-import com.bethen.bethen.models.NameValidationResponseModel;
+import com.bethen.bethen.models.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -26,6 +24,7 @@ public class HttpServices {
     private final String API_KEY = "sk_live_ovtu6tgmw8pfbvt4t9kumlzn4hjwsefsbtwc7af";
     //private  final  String API_KEY = "sk_live_fy42phqmdmq40wbeuzemrf0s6kmcarmkjzdy0o4";
     private final String URL = "https://api.budpay.com/api/v1/bank_list/NGN";
+    private final String ACCOUNT_DETAILS = "https://api.budpay.com/api/s2s/banktransfer/initialize";
     //Initialise WebClient
     private final WebClient webClient;
 
@@ -103,6 +102,25 @@ public class HttpServices {
         }catch (HttpClientErrorException | HttpServerErrorException e){
             throw new RuntimeException(e.getResponseBodyAsString());
         }
+        return null;
+    }
+
+    public GenerateAccountResponse getAccountDetails (GenerateAccountDto generateAccountDto){
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("Authorization", "Bearer " + API_KEY);
+            HttpEntity<GenerateAccountDto> entity = new HttpEntity<>(generateAccountDto, headers);
+            ResponseEntity<GenerateAccountResponse> exchange = restTemplate.exchange(ACCOUNT_DETAILS, HttpMethod.POST, entity, new ParameterizedTypeReference<GenerateAccountResponse>() {});
+
+            if(exchange.getStatusCode().is2xxSuccessful()){
+                GenerateAccountResponse data = exchange.getBody();
+                return data;
+            }
+        }catch (HttpClientErrorException | HttpServerErrorException e){
+            throw  new RuntimeException(e.getResponseBodyAsString());
+        }
+
         return null;
     }
 

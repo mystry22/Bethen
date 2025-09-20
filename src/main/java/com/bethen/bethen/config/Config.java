@@ -61,6 +61,7 @@ public class Config {
                                 .requestMatchers("/api/v1/transactions/nameValidation").permitAll()
                                 .requestMatchers("/api/v1/admin/addFundsToUser").hasRole("ADMIN")
                                 .requestMatchers("/api/v1/transactions/doPayOut").hasRole("BASIC")
+                                .requestMatchers("/api/v1/transactions/generatePaymentAccount").permitAll()
 
                     .anyRequest().authenticated()
                         // Require authentication for all other requests

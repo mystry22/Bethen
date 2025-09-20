@@ -1,6 +1,7 @@
 package com.bethen.bethen.services;
 
 import com.bethen.bethen.dto.ActivatePlanRequestDto;
+import com.bethen.bethen.dto.GenerateAccountDto;
 import com.bethen.bethen.dto.PaymentLinkRequestDto;
 import com.bethen.bethen.dto.PayoutDto;
 import com.bethen.bethen.interfaces.TransactionsInter;
@@ -273,6 +274,11 @@ public class TransactionsService implements TransactionsInter {
 
         //get invest data and return same
         return null;
+    }
+
+    @Override
+    public GenerateAccountResponse generateAccount(GenerateAccountDto generateAccountDto) {
+        return  httpServices.getAccountDetails(generateAccountDto);
     }
 
 
