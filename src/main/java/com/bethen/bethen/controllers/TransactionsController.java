@@ -59,7 +59,7 @@ public class TransactionsController {
 
     @PostMapping("/webhook")
     public ResponseEntity<?> receiveWebhook(@RequestBody WebhookResponseDto webhook){
-        String response = transactionsService.updatePayment(webhook.getData().getReference(), webhook.getData().getAmount());
+        String response = transactionsService.updatePayment(webhook);
 
         if ((response.equals("updated"))){
             Msg msg = new Msg(true, "Transaction updated successfully");

@@ -1,9 +1,6 @@
 package com.bethen.bethen.services;
 
-import com.bethen.bethen.dto.ActivatePlanRequestDto;
-import com.bethen.bethen.dto.GenerateAccountDto;
-import com.bethen.bethen.dto.PaymentLinkRequestDto;
-import com.bethen.bethen.dto.PayoutDto;
+import com.bethen.bethen.dto.*;
 import com.bethen.bethen.interfaces.TransactionsInter;
 import com.bethen.bethen.models.*;
 import com.bethen.bethen.repos.InvestmentRepo;
@@ -89,27 +86,24 @@ public class TransactionsService implements TransactionsInter {
 
     //Update payment
     @Override
-    public String updatePayment(String reference, String amount) {
+    public String updatePayment(WebhookResponseDto webhookResponseDto) {
 
         //Get reference
 
-        TransactionsModel transactionsModel = transactionRepo.findById(reference).orElse(null);
+        TransactionsModel transactionsModel = transactionRepo.findById(webhookResponseDto.getData().getReference()).orElse(null);
 
         if (transactionsModel != null){
             //update to paid if successful
-            transactionsModel.setStatus("success");
+            transactionsModel.setStatus(webhookResponseDto.getNotifyType());
             transactionsModel.setUpdatedAt(Helper.generateTodayDateAndTime(), Helper.dateTimeFormatter());
             transactionRepo.save(transactionsModel);
 
             //Update balance
-           double amt = Double.parseDouble(amount);
+           double amt = Double.parseDouble(webhookResponseDto.getData().getAmount());
           MemberModel memberModel = membersRepo.findById(transactionsModel.getUserId()).orElse(null);
             double newModel = memberModel.getBalance() + amt;
             memberModel.setBalance(newModel);
             membersRepo.save(memberModel);
-
-
-
             return  "updated";
         }
 
