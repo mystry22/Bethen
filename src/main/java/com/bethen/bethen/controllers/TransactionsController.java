@@ -145,8 +145,9 @@ public class TransactionsController {
     }
 
     @PostMapping("generatePaymentAccount")
-    public  ResponseEntity<GenerateAccountResponse> generateAccount(@RequestBody GenerateAccountDto generateAccountDto){
-        return new ResponseEntity<>(transactionsService.generateAccount(generateAccountDto),HttpStatus.OK);
+    public  ResponseEntity<GenerateAccountResponse> generateAccount(@RequestHeader (HttpHeaders.AUTHORIZATION) String authorization, @RequestBody GenerateAccountDto generateAccountDto){
+        String token = authorization.substring(7);
+        return new ResponseEntity<>(transactionsService.generateAccount(generateAccountDto, token),HttpStatus.OK);
     }
 
 

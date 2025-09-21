@@ -277,7 +277,21 @@ public class TransactionsService implements TransactionsInter {
     }
 
     @Override
-    public GenerateAccountResponse generateAccount(GenerateAccountDto generateAccountDto) {
+    public GenerateAccountResponse generateAccount(GenerateAccountDto generateAccountDto, String token) {
+        //Extract token claims to get userId
+        Claims claims = (Claims) jwtUtil.getTotalClaims(token);
+        String userId = claims.get("userId").toString();
+
+        //Register transaction
+        TransactionsModel regTrans = new TransactionsModel();
+        regTrans.setAmount(generateAccountDto.getAmount());
+        regTrans.setUserId(userId);
+        regTrans.setType("funding");
+        regTrans.setReference(generateAccountDto.getReference());
+        regTrans.setStatus("pending");
+        regTrans.setCreatedAt(Helper.generateTodayDateAndTime(),Helper.dateTimeFormatter());
+        transactionRepo.save(regTrans);
+        //Generate account details
         return  httpServices.getAccountDetails(generateAccountDto);
     }
 

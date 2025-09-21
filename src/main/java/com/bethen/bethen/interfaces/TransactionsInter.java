@@ -20,5 +20,5 @@ public interface TransactionsInter {
     public NameValidationResponseModel validateName(NameValidationModel nameValidationModel);
     public CustomReturnResponse doPayout(String token, PayoutDto payoutDto);
     public InvestmentModel getInvestmentData (String token);
-    public GenerateAccountResponse generateAccount(GenerateAccountDto generateAccountDto);
+    public GenerateAccountResponse generateAccount(GenerateAccountDto generateAccountDto, String token);
 }
