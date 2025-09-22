@@ -94,7 +94,7 @@ public class TransactionsService implements TransactionsInter {
 
         if (transactionsModel != null){
             //update to paid if successful
-            transactionsModel.setStatus(webhookResponseDto.getNotifyType());
+            transactionsModel.setStatus(webhookResponseDto.getData().getStatus());
             transactionsModel.setUpdatedAt(Helper.generateTodayDateAndTime(), Helper.dateTimeFormatter());
             transactionRepo.save(transactionsModel);
 
