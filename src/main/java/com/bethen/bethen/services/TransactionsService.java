@@ -98,13 +98,18 @@ public class TransactionsService implements TransactionsInter {
             transactionsModel.setUpdatedAt(Helper.generateTodayDateAndTime(), Helper.dateTimeFormatter());
             transactionRepo.save(transactionsModel);
 
-            //Update balance
-           double amt = Double.parseDouble(webhookResponseDto.getData().getAmount());
-          MemberModel memberModel = membersRepo.findById(transactionsModel.getUserId()).orElse(null);
-            double newModel = memberModel.getBalance() + amt;
-            memberModel.setBalance(newModel);
-            membersRepo.save(memberModel);
-            return  "updated";
+            //check if success
+            if(webhookResponseDto.getData().getStatus().equals("success")){
+                //Update balance
+                double amt = Double.parseDouble(webhookResponseDto.getData().getAmount());
+                MemberModel memberModel = membersRepo.findById(transactionsModel.getUserId()).orElse(null);
+                double newModel = memberModel.getBalance() + amt;
+                memberModel.setBalance(newModel);
+                membersRepo.save(memberModel);
+                return  "updated";
+            }
+
+
         }
 
         //return string
