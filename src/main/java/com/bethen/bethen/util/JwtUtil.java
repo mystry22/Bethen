@@ -70,8 +70,6 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-
-
     }
 
     //Check token expiration
