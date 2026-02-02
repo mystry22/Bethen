@@ -132,6 +132,8 @@ public class MembersController {
 
     //Trying to force a deployment
     //Login member
+    //Trying to force another build
+
     @PostMapping("/memberLogin")
     public ResponseEntity<?> memberLogin(@RequestBody LoginDto loginDto,BindingResult bindingResult){
         if(bindingResult.hasErrors()){
