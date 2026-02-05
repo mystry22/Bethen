@@ -147,7 +147,7 @@ public class MembersController {
             return  new ResponseEntity<>(errorMap, HttpStatus.BAD_REQUEST);
         }else {
              Object isUser = memberService.loginUser(loginDto);
-             if(isUser == "wrong credential"){
+             if(isUser.equals("wrong credential")){
                  Msg msg = new Msg(false, "Invalid credentials");
                  return new ResponseEntity<>(msg, HttpStatus.UNAUTHORIZED);
              }else {
